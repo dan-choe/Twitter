@@ -11,6 +11,8 @@ import BDBOAuth1Manager
 
 class TwitterClient: BDBOAuth1SessionManager {
     
+    
+    
     static let sharedInstance = TwitterClient(baseURL: NSURL(string: "https://api.twitter.com")!, consumerKey: "K64z31U1bkxsyPPbf60geSUUn", consumerSecret: "E56jlei8z7yjrxfTLeTGjdrZcYfFHnIzLZfeeBzN7Yyqa1tt4U")
     
     var loginSuccess: (() -> ())?
@@ -51,21 +53,16 @@ class TwitterClient: BDBOAuth1SessionManager {
             print("profile url: \(user.profile_image_url_https)")
             print("description: \(user.tagline)")
             
+            print("account: \(user!["name"])")
+
+            
             */
             
             let userDictionary = response as! NSDictionary
             let user = User(dictionary: userDictionary)
             
             success(user)
-            
-            /*
-            
-            print("account: \(user!["name"])")
-            print("screenname: \(user!["screen_name"])")
-            print("profile url: \(user!["profile_image_url_https"])")
-            print("description: \(user!["description"])")
-            */
-            
+          
             }, failure: { (task: NSURLSessionDataTask?, error: NSError) -> Void in
                 failure(error)
         })
@@ -90,6 +87,14 @@ class TwitterClient: BDBOAuth1SessionManager {
         }
     }
     
+    func logout(){
+        User.currentUser = nil
+        deauthorize()
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(User.UserDidLogoutNotification, object: nil)
+    }
+    
+    
     func handleOpenUrl(url: NSURL){
         let requestToken = BDBOAuth1Credential(queryString: url.query)
         
@@ -108,5 +113,29 @@ class TwitterClient: BDBOAuth1SessionManager {
                 self.loginFailure?(error)
         }
     }
-
+    //completion: (tweet: Tweet?, error: NSError?) -> ()
+    func retweet(tweetID: NSNumber) {
+        POST("1.1/statuses/retweet/\(tweetID).json", parameters: nil, progress: { (progress) -> Void in
+            }, success: { (operation: NSURLSessionDataTask!, response: AnyObject?) -> Void in
+            }, failure: { (operation: NSURLSessionDataTask?, error: NSError!) -> Void in
+                print("error: \(error.localizedDescription)")
+        })
+    }
+    //completion: (tweet: Tweet?, error: NSError?) -> ()
+    func favorite(tweetID: NSNumber, favorite: Bool) {
+        POST("1.1/favorites/create.json?id=\(tweetID)", parameters: nil, progress: { (progress) -> Void in
+            }, success: { (operation: NSURLSessionDataTask!, response: AnyObject?) -> Void in
+            }, failure: { (operation: NSURLSessionDataTask?, error: NSError!) -> Void in
+                print("error: \(error.localizedDescription)")
+        })
+    }
+    
+    func cancelFavorite(tweetID: NSNumber, favorite: Bool, completion: (tweet: Tweet?, error: NSError?) -> ()) {
+        POST("/1.1/favorites/destroy.json", parameters: nil, progress: { (progress) -> Void in
+            }, success: { (operation: NSURLSessionDataTask!, response: AnyObject?) -> Void in
+            }, failure: { (operation: NSURLSessionDataTask?, error: NSError!) -> Void in
+                print("error: \(error.localizedDescription)")
+        })
+    }
+    
 }

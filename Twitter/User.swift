@@ -16,7 +16,9 @@ class User: NSObject {
     var tagline: NSString?
     
     var dictionary: NSDictionary?
-    
+    static let UserDidLogoutNotification = "UserDidLogout"
+    static var _currentUser: User?
+
     init(dictionary: NSDictionary){
         self.dictionary = dictionary
         
@@ -28,10 +30,9 @@ class User: NSObject {
         }
         
         tagline = dictionary["description"] as? String
-        
+        /// self.dictionary = dictionary
     }
     
-    static var _currentUser: User?
     
     class var currentUser: User? {
         get{
@@ -41,9 +42,12 @@ class User: NSObject {
                 let userData = defaults.objectForKey("currentUserData") as? NSData
         
                 if let userData = userData {
-                    let dictionary = try! NSJSONSerialization.JSONObjectWithData(userData, options: []) as! NSDictionary
         
-                    _currentUser = User(dictionary: dictionary)
+                        let dictionary = try! NSJSONSerialization.JSONObjectWithData(userData, options: [])
+        
+                        _currentUser = User(dictionary: dictionary as! NSDictionary)
+//                    let dictionary = try! NSJSONSerialization.JSONObjectWithData(userData, options: []) as! NSDictionary
+//                    _currentUser = User(dictionary: dictionary)
                 }
             }
             return _currentUser
