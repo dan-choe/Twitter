@@ -4,7 +4,7 @@
 
 Time spent: 20 hours spent in total
 
-## User Stories
+## 1st User Stories
 
 The following **required** functionality is completed:
 
@@ -26,7 +26,7 @@ The following **additional** features are implemented:
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-## User Stories
+## 2nd User Stories
 
 The following **required** functionality is completed:
 
