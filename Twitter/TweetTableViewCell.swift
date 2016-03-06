@@ -17,8 +17,6 @@ class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var tweetTime: UILabel!
     @IBOutlet weak var retweetCount: UILabel!
     @IBOutlet weak var favoriteCount: UILabel!
-       
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()
