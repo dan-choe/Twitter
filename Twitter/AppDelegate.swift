@@ -27,9 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = viewController
             
             
-        }//else{
-         //   print("There is no current user")
-        //}
+        }else{
+           print("There is no current user")
+        }
         
         NSNotificationCenter.defaultCenter().addObserverForName(User.UserDidLogoutNotification, object: nil, queue: NSOperationQueue.mainQueue()) { (NSNotification) -> Void in
             

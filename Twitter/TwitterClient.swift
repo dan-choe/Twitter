@@ -11,8 +11,6 @@ import BDBOAuth1Manager
 
 class TwitterClient: BDBOAuth1SessionManager {
     
-    
-    
     static let sharedInstance = TwitterClient(baseURL: NSURL(string: "https://api.twitter.com")!, consumerKey: "K64z31U1bkxsyPPbf60geSUUn", consumerSecret: "E56jlei8z7yjrxfTLeTGjdrZcYfFHnIzLZfeeBzN7Yyqa1tt4U")
     
     var loginSuccess: (() -> ())?
@@ -36,6 +34,19 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
 
     }
+    
+    func userTimeline(userID: String, success: ([Tweet]) -> (), failure: (NSError) -> ()) {
+        GET("1.1/statuses/user_timeline.json", parameters: ["screen_name": userID] as NSDictionary, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
+            let tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
+            success(tweets)
+            
+            }, failure: { (task: NSURLSessionDataTask?, error:NSError) -> Void in
+               failure(error)
+            }
+        )
+    }
+    
+
     
     func currentAccount(success: (User) -> (), failure: (NSError) -> ()){
         GET("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
@@ -76,9 +87,10 @@ class TwitterClient: BDBOAuth1SessionManager {
         TwitterClient.sharedInstance.deauthorize()
         TwitterClient.sharedInstance.fetchRequestTokenWithPath("oauth/request_token", method: "GET", callbackURL: NSURL(string: "twitterdemo://oauth"), scope: nil,
             success: { (requestToken:BDBOAuth1Credential!) -> Void in
-                print("I got a token!")
+                print("I got a token!!!")
                 
                 let url = NSURL(string: "https://api.twitter.com/oauth/authorize?oauth_token=\(requestToken.token)")!
+                print(url)
                 UIApplication.sharedApplication().openURL(url)
                 
             }){ (error: NSError!) -> Void in
@@ -137,5 +149,6 @@ class TwitterClient: BDBOAuth1SessionManager {
                 print("error: \(error.localizedDescription)")
         })
     }
+    
     
 }

@@ -119,14 +119,20 @@ class TweetViewController: UIViewController, UITableViewDataSource, UITableViewD
     */
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
+          print("### \(segue.identifier)")
+        if(segue.identifier == "compose"){
+            let composeViewController = segue.destinationViewController as! ComposeViewController
+            composeViewController.user = User.currentUser
+            
+            
+        }else{
         let cell = sender as! UITableViewCell
         let indexPath = tableView.indexPathForCell(cell)
         let tweet = tweets![indexPath!.row]
 
         let detailViewController = segue.destinationViewController as! DetailViewController
         detailViewController.tweet = tweet
-        
+        }
         
         
         
